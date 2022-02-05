@@ -29,6 +29,7 @@ if [ -d "Postman" ]; then
 fi
 
 echo "Extracting Postman tarball"
+
 tar -xf $(ls postman*.tar.gz)
 
 if [ $? -gt 0 ]; then
@@ -49,6 +50,7 @@ if [ -d "postman_$version" ]; then
 fi
 
 echo "Creating 'postman_$version' folder structure and files"
+
 mkdir -p "postman_$version"
 
 mkdir -p "postman_$version/usr/share/applications"
@@ -62,16 +64,19 @@ mkdir -p "postman_$version/DEBIAN"
 touch "postman_$version/DEBIAN/control" "postman_$version/DEBIAN/postinst" "postman_$version/DEBIAN/prerm"
 
 echo "Copying files"
+
 cp "Postman/app/resources/app/assets/icon.png" "postman_$version/usr/share/icons/hicolor/128x128/apps/postman.png"
 cp -R "Postman/"* "postman_$version/opt/postman/"
 
 echo "Writing files"
+
 echo $e "[Desktop Entry]\nType=Application\nName=Postman\nGenericName=Postman API Tester\nIcon=postman\nExec=postman\nPath=/opt/postman\nCategories=Development;" > "postman_$version/opt/postman/Postman.desktop"
 echo $e "Package: Postman\nVersion: $version\nSection: devel\nPriority: optional\nArchitecture: amd64\nDepends: gconf2\nMaintainer: You\nDescription: Postman\n API something" > "postman_$version/DEBIAN/control"
 echo $e "if [ -f \"/usr/bin/postman\" ]; then\n\tsudo rm -f \"/usr/bin/postman\"\nfi\n\nsudo ln -s \"/opt/postman/Postman\" \"/usr/bin/postman\"\n\ndesktop-file-install \"/opt/postman/Postman.desktop\"" > "postman_$version/DEBIAN/postinst"
 echo $e "if [ -f \"/usr/bin/postman\" ]; then\n\tsudo rm -f \"/usr/bin/postman\"\nfi" > "postman_$version/DEBIAN/prerm"
 
 echo "Setting modes"
+
 chmod 0775 "postman_$version/DEBIAN/postinst"
 chmod 0775 "postman_$version/DEBIAN/prerm"
 
@@ -81,6 +86,7 @@ if [ -f "postman_$version.deb" ]; then
 fi
 
 echo "Building 'postman_$version.deb'"
+
 dpkg-deb -b "postman_$version" > /dev/null
 
 if [ $? -gt 0 ]; then
@@ -90,6 +96,7 @@ if [ $? -gt 0 ]; then
 fi
 
 echo "Cleaning up"
+
 rm -f $(ls postman*.tar.gz)
 rm -rf "Postman/"
 rm -rf "postman_$version/"
@@ -108,6 +115,7 @@ while true; do
 done
 
 echo "Installing"
+
 sudo apt install "./postman_$version.deb"
 
 if [ $? -gt 0 ]; then
@@ -116,5 +124,6 @@ if [ $? -gt 0 ]; then
 fi
 
 echo "Removing 'postman_$version.deb'"
+
 rm -f "postman_$version.deb"
 rm -f $(ls postman*)
